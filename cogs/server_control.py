@@ -132,10 +132,7 @@ class ServerControl(commands.Cog):
 
                 if players is None:
 
-                    await interaction.followup.send(
-                        "🔴 Palworld server is currently offline.",
-                        ephemeral=True
-                    )
+                    await self.send_offline_message(interaction)
 
                     return
 
@@ -225,10 +222,7 @@ class ServerControl(commands.Cog):
 
             if result is None:
 
-                await interaction.followup.send(
-                    "🔴 Palworld server is currently offline.",
-                    ephemeral=True
-                )
+                await self.send_offline_message(interaction)
 
                 return
 
@@ -236,21 +230,11 @@ class ServerControl(commands.Cog):
                 "💾 World save command sent successfully.",
                 ephemeral=True
             )
-            embed = discord.Embed(
-    title="💾 World Save Initiated"
-)
-
-            embed.add_field(
-                name="Requested By",
-                value=interaction.user.mention,
-                inline=False
+            await self.log_action(
+                guild_id=interaction.guild.id,
+                title="💾 World Save Initiated",
+                requester=interaction.user.mention
             )
-
-            await send_log(
-                self.bot,
-                interaction.guild.id,
-                embed
-)
         except Exception as e:
 
             self.bot.logger.exception(
@@ -314,39 +298,16 @@ class ServerControl(commands.Cog):
 
             if result is None:
 
-                await interaction.followup.send(
-                    "🔴 Palworld server is currently offline.",
-                    ephemeral=True
-                )
-
+                await self.send_offline_message(interaction)
                 return
 
-            embed = discord.Embed(
-                title="🛑 Server Shutdown Initiated"
-            )
-
-            embed.add_field(
-                name="Requested By",
-                value=interaction.user.mention,
-                inline=False
-            )
-
-            embed.add_field(
-                name="Wait Time",
-                value=f"{wait_time} seconds",
-                inline=False
-            )
-
-            embed.add_field(
-                name="Message",
-                value=message,
-                inline=False
-            )
-
-            await send_log(
-                self.bot,
-                interaction.guild.id,
-                embed
+            
+            await self.log_action(
+                guild_id=interaction.guild.id,
+                title="🛑 Server Shutdown Initiated",
+                requester=interaction.user.mention,
+                wait_time=f"{wait_time} seconds",
+                message=message
             )
 
             await interaction.followup.send(
@@ -401,20 +362,10 @@ class ServerControl(commands.Cog):
 
             await self.bot.palworld.start()
 
-            embed = discord.Embed(
-                title="🚀 Server Startup Initiated"
-            )
-
-            embed.add_field(
-                name="Requested By",
-                value=interaction.user.mention,
-                inline=False
-            )
-
-            await send_log(
-                self.bot,
-                interaction.guild.id,
-                embed
+            await self.log_action(
+                guild_id=interaction.guild.id,
+                title="🚀 Server Start Initiated",
+                requester=interaction.user.mention
             )
 
             await interaction.followup.send(
@@ -527,32 +478,13 @@ class ServerControl(commands.Cog):
 
             await self.bot.palworld.start()
 
-            embed = discord.Embed(
+            await self.log_action(
+                guild_id=guild_id,
                 title="🔄 Server Restart Completed",
-                timestamp=discord.utils.utcnow()
+                requester=requester,
+                wait_time=f"{wait_time} seconds",
+                message=message
             )
-
-            embed.add_field(
-                name="Requested By",
-                value=requester,
-                inline=False
-            )
-            embed.add_field(
-                name="Wait Time",
-                value=f"{wait_time} seconds",
-                inline=False
-            )
-            embed.add_field(
-                name="Message",
-                value=message,
-                inline=False
-            )
-            await send_log(
-                self.bot,
-                guild_id,
-                embed
-            )
-
             self.bot.logger.info(
                 "Restart sequence completed."
             )
