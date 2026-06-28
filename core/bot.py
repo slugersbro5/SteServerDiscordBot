@@ -44,17 +44,17 @@ class ServerBot(commands.Bot):
         self.palworld = PalworldAPI(self)
         self.database = Database()
         await self.database.initialize()
-        logging.getLogger(
-            "ServerBot"
-            ).info(
-                "Initialized database connection."
-            )
-        cogs = [
-            "cogs.role_manager",
-            "cogs.message_logger",
-            "cogs.server_control",
-            "cogs.admin"
-        ]
+        self.logger.info(
+            "Initialized database connection."
+        )
+        cogs = []
+        for filename in os.listdir("cogs"):
+
+            if filename.endswith(".py"):
+
+                cog_name = f"cogs.{filename[:-3]}"
+
+                cogs.append(cog_name)
 
         for cog in cogs:
 
@@ -89,7 +89,7 @@ class ServerBot(commands.Bot):
         if self.http_session:
             await self.http_session.close()
 
-            await super().close()
+        await super().close()
     async def on_ready(self):
 
         self.logger.info(
@@ -132,7 +132,7 @@ class ServerBot(commands.Bot):
             f"Slash Command Error: {error}"
         )
 
-        message = (
+            message = (
             "⚠️ An unexpected error occurred."
         )
 
