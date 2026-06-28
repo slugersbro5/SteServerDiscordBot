@@ -1,7 +1,7 @@
 import asyncio
 import os
 from dotenv import load_dotenv
-
+##Hello, BOOP BOT
 
 from core.bot import ServerBot
 from core.logger import setup_logger
