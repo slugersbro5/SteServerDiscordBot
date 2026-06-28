@@ -143,22 +143,7 @@ class PalworldAPI:
     
 
 
-    async def start_server(self):
-
-        script = self.bot.config[
-            "palworld"
-        ]["start_script"]
-
-        subprocess.Popen(
-            script,
-            shell=True
-        )
-
-        self.bot.logger.info(
-            "Palworld startup script launched."
-        )
-
-        return True
+    
     
     async def is_online(self):
 

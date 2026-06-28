@@ -2,11 +2,13 @@ import aiohttp
 import logging
 import os
 import discord
+import palworld_service 
 
 from core.palworld_api import PalworldAPI
 from discord.ext import commands
 from discord import app_commands
 from core.database import Database
+from core.process_manager import ProcessManager
 
 class ServerBot(commands.Bot):
 
@@ -23,7 +25,8 @@ class ServerBot(commands.Bot):
         "port": int(os.getenv("PALWORLD_PORT", 8212)),
         "username": os.getenv("PALWORLD_USERNAME"),
         "password": os.getenv("PALWORLD_PASSWORD"),
-        "start_script": os.getenv("PALWORLD_START_SCRIPT")
+        "directory": os.getenv("PALWORLD_DIRECTORY"),
+        "executable": os.getenv("PALWORLD_EXECUTABLE")
     }
 }
         if not self.config["discord_token"]:
@@ -40,9 +43,11 @@ class ServerBot(commands.Bot):
         )
         self.http_session = None
     async def setup_hook(self):
+        self.palworld = palworld_service(api, process_manager)
         self.http_session = aiohttp.ClientSession()
-        self.palworld = PalworldAPI(self)
         self.database = Database()
+        api = PalworldAPI(self)
+        process_manager = ProcessManager(self)
         await self.database.initialize()
         self.logger.info(
             "Initialized database connection."

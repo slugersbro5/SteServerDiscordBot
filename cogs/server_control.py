@@ -358,7 +358,7 @@ class ServerControl(commands.Cog):
 
                 return
 
-            await self.bot.palworld.start_server()
+            await self.bot.process.start()
 
             embed = discord.Embed(
                 title="🚀 Server Startup Initiated"
