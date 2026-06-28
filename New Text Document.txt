@@ -1,0 +1,7 @@
+2026-06-28 07:09:48,991 | INFO | ServerBot | Received /serverstart from: istevy
+2026-06-28 07:09:49,195 | ERROR | ServerBot | Unexpected error: 'PalworldService' object has no attribute 'get_info'
+Traceback (most recent call last):
+  File "c:\Bots\PalworldServerDiscordBot\cogs\server_control.py", line 350, in server_start
+    info = await self.bot.palworld.get_info()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PalworldService' object has no attribute 'get_info'

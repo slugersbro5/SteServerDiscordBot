@@ -2,9 +2,9 @@ class PalworldService:
     def __init__(self, api, process_manager):
         self.api = api
         self.process_manager = process_manager
-        async def start(self):
+    async def start(self):
             return await self.process_manager.start()
-        async def stop(self,
+    async def stop(self,
                        wait_time,
                        message
                        ):
@@ -12,9 +12,9 @@ class PalworldService:
                 wait_time,
                 message
             )
-        async def save(self):
+    async def save(self):
             return await self.api.save_server()
-        async def shutdown(self,
+    async def shutdown(self,
                            wait_time,
                            message
                            ):
@@ -22,9 +22,9 @@ class PalworldService:
                 wait_time,
                 message
             )
-        async def get_players(self):
+    async def get_players(self):
             return await self.api.get_players()
-        async def get_info(self):
+    async def get_info(self):
             return await self.api.get_info()
-        async def is_online(self):
+    async def is_online(self):
             return await self.api.is_online()
