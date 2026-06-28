@@ -4,9 +4,14 @@ class PalworldService:
         self.api = api
         self.process = process
 
+    # process control
     async def start(self):
         return await self.process.start()
 
+    async def is_running(self):
+        return await self.process.is_running()
+
+    # API passthroughs
     async def get_info(self):
         return await self.api.get_info()
 

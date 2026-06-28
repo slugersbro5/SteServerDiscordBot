@@ -180,7 +180,7 @@ class ServerControl(commands.Cog):
 
         try:
 
-            result = await self.bot.palworld.save_world()
+            result = await self.bot.palworld.save()
 
             if result is None:
 
@@ -266,7 +266,7 @@ class ServerControl(commands.Cog):
 
         try:
 
-            result = await self.bot.palworld.shutdown_server(
+            result = await self.bot.palworld.shutdown(
                 wait_time,
                 message
             )
@@ -421,7 +421,7 @@ class ServerControl(commands.Cog):
     
         try:
 
-            if not await self.bot.palworld.is_online():
+            if not await self.bot.palworld.is_running():
 
                 await interaction.followup.send(
                     "🔴 Palworld server is currently offline.",
@@ -471,11 +471,11 @@ class ServerControl(commands.Cog):
                 "Beginning restart sequence."
             )
 
-            await self.bot.palworld.save_world()
+            await self.bot.palworld.save()
 
             await asyncio.sleep(5)
 
-            await self.bot.palworld.shutdown_server(
+            await self.bot.palworld.shutdown(
                 wait_time,
                 message
             )
@@ -484,7 +484,7 @@ class ServerControl(commands.Cog):
                 wait_time + 30
             )
 
-            await self.bot.palworld.start_server()
+            await self.bot.palworld.start()
 
             embed = discord.Embed(
                 title="🔄 Server Restart Completed",
