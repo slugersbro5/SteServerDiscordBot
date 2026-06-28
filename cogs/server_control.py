@@ -11,6 +11,50 @@ class ServerControl(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+    async def send_offline_message(
+        self,
+        interaction: discord.Interaction,
+    ):
+        """Send a consistent offline response."""
+
+        await interaction.followup.send(
+            "🔴 Palworld server is currently offline.",
+            ephemeral=True,
+        )    
+
+    async def log_action(
+        self,
+        guild_id: int,
+        title: str,
+        requester: str,
+        **fields,
+    ):
+        """Send an admin log embed."""
+
+        embed = discord.Embed(
+            title=title,
+            timestamp=discord.utils.utcnow(),
+        )
+
+        embed.add_field(
+            name="Requested By",
+            value=requester,
+            inline=False,
+        )
+
+        for name, value in fields.items():
+
+            embed.add_field(
+                name=name.replace("_", " ").title(),
+                value=str(value),
+                inline=False,
+            )
+
+        await send_log(
+            self.bot,
+            guild_id,
+            embed,
+        )
 ### Server Status Command ###
     @app_commands.command(
     name="serverstatus",
@@ -40,10 +84,7 @@ class ServerControl(commands.Cog):
 
             if info is None:
 
-                await interaction.followup.send(
-                    "🔴 Palworld server is currently offline.",
-                    ephemeral=True
-                )
+                await self.send_offline_message(interaction)
 
                 return
 

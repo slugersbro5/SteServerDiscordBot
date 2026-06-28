@@ -1,8 +1,8 @@
 class PalworldService:
 
-    def __init__(self, api, process):
+    def __init__(self, api, process_manager):
         self.api = api
-        self.process = process
+        self.process = process_manager
 
     # process control
     async def start(self):
