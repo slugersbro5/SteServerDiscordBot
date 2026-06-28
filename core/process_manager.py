@@ -36,14 +36,23 @@ class ProcessManager:
             f"Palworld server started with PID: {self.process.pid}"
         )
         return True
-    async def is_running(self):
+    def is_running(self):
 
+    # 1. Check tracked PID first (most accurate)
+        if hasattr(self, "pid") and self.pid:
+            if psutil.pid_exists(self.pid):
+             return True
+
+    # 2. Check subprocess handle
         if self.process:
-
             return self.process.poll() is None
+
+    # 3. Fallback scan
         for process in psutil.process_iter(["name"]):
+            try:
+                if "palserver" in (process.info["name"] or "").lower():
+                    return True
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
 
-            if process.info["name"] == "PalServer.exe":
-
-                return True
         return False
