@@ -1,30 +1,20 @@
 class PalworldService:
-    def __init__(self, api, process_manager):
+
+    def __init__(self, api, process):
         self.api = api
-        self.process_manager = process_manager
+        self.process = process
+
     async def start(self):
-            return await self.process_manager.start()
-    async def stop(self,
-                       wait_time,
-                       message
-                       ):
-            return await self.api.shutdown_server(
-                wait_time,
-                message
-            )
-    async def save(self):
-            return await self.api.save_server()
-    async def shutdown(self,
-                           wait_time,
-                           message
-                           ):
-            return await self.api.shutdown_server(
-                wait_time,
-                message
-            )
-    async def get_players(self):
-            return await self.api.get_players()
+        return await self.process.start()
+
     async def get_info(self):
-            return await self.api.get_info()
-    async def is_online(self):
-            return await self.api.is_online()
+        return await self.api.get_info()
+
+    async def get_players(self):
+        return await self.api.get_players()
+
+    async def save(self):
+        return await self.api.save_world()
+
+    async def shutdown(self, wait_time=30, message="Server shutting down"):
+        return await self.api.shutdown_server(wait_time, message)
