@@ -9,7 +9,7 @@ class PalworldService:
         return await self.process.start()
 
     async def is_running(self):
-        return await self.process.is_running()
+        return self.process.is_running()
 
     # API passthroughs
     async def get_info(self):

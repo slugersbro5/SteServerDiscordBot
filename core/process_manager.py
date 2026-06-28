@@ -1,5 +1,6 @@
 import os
 import subprocess
+
 import psutil
 
 
@@ -18,41 +19,91 @@ class ProcessManager:
 
     async def start(self):
 
-        exe = os.path.join(self.directory, self.executable
-                           
-                           )
-        
+        if self.is_running():
+
+            self.bot.logger.warning(
+                "Palworld server is already running."
+            )
+
+            return False
+
+        exe = os.path.join(
+            self.directory,
+            self.executable,
+        )
+
         if not os.path.exists(exe):
 
-            raise FileNotFoundError(exe)
+            raise FileNotFoundError(
+                f"Palworld executable not found: {exe}"
+            )
+
         self.bot.logger.info(
-            f"Starting Palworld server: {exe}")
-        self.process = subprocess.Popen(
-            [exe, "-log"],
-            cwd=self.directory
+            f"Executable: {exe}"
         )
 
         self.bot.logger.info(
-            f"Palworld server started with PID: {self.process.pid}"
+            f"Working directory: {self.directory}"
         )
-        return True
+
+        try:
+
+            self.process = subprocess.Popen(
+                [exe, "-log"],
+                cwd=self.directory,
+            )
+
+            self.bot.logger.info(
+                f"Palworld server started with PID: {self.process.pid}"
+            )
+
+            return True
+
+        except Exception:
+
+            self.bot.logger.exception(
+                "Failed to start Palworld server."
+            )
+
+            raise
+
     def is_running(self):
 
-    # 1. Check tracked PID first (most accurate)
-        if hasattr(self, "pid") and self.pid:
-            if psutil.pid_exists(self.pid):
-             return True
-
-    # 2. Check subprocess handle
+        # First check the process this bot started.
         if self.process:
-            return self.process.poll() is None
 
-    # 3. Fallback scan
-        for process in psutil.process_iter(["name"]):
+            if self.process.poll() is None:
+
+                return True
+
+            self.bot.logger.info(
+                "Tracked Palworld process has exited."
+            )
+
+            self.process = None
+
+        # If the bot restarted, search for an existing Palworld process.
+        for process in psutil.process_iter(["pid", "name"]):
+
             try:
-                if "palserver" in (process.info["name"] or "").lower():
+
+                name = process.info["name"] or ""
+
+                if "palserver" in name.lower():
+
+                    self.bot.logger.info(
+                        f"Found existing Palworld process "
+                        f"(PID: {process.pid})."
+                    )
+
                     return True
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
+
+            except (
+                psutil.NoSuchProcess,
+                psutil.AccessDenied,
+                psutil.ZombieProcess,
+            ):
+
                 continue
 
         return False
