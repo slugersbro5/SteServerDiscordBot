@@ -2,7 +2,7 @@ import aiohttp
 import logging
 import os
 import discord
-import palworld_service 
+import palworld_service
 
 from core.palworld_api import PalworldAPI
 from discord.ext import commands
@@ -43,7 +43,7 @@ class ServerBot(commands.Bot):
         )
         self.http_session = None
     async def setup_hook(self):
-        self.palworld = palworld_service(api, process_manager)
+        self.palworld = palworld_service.PalworldService(api, process_manager)
         self.http_session = aiohttp.ClientSession()
         self.database = Database()
         api = PalworldAPI(self)
